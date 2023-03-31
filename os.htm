@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Contoh Website</title>
+  </head>
+  <body>
+    <h1>Selamat Datang di Website Saya</h1>
+<style>
+#post-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.post-item {
+  width: 300px;
+  margin: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.post-thumbnail img {
+  width: 100%;
+}
+
+.post-content {
+  padding: 20px;
+}
+
+.post-content h2 a {
+  color: #333;
+  text-decoration: none;
+}
+
+.post-content h2 a:hover {
+  text-decoration: underline;
+}
+
+.post-date {
+  color: #999;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+</style>
+<script>
+function showPostList(data) {
+  var postList = document.getElementById("post-list");
+  var posts = data.feed.entry;
+
+  for (var i = 0; i < posts.length; i++) {
+    var post = posts[i];
+    var title = post.title.$t;
+    var date = post.published.$t.substring(0, 10);
+    var link = "";
+    for (var j = 0; j < post.link.length; j++) {
+      if (post.link[j].rel == "alternate") {
+        link = post.link[j].href;
+        break;
+      }
+    }
+    var content = post.content.$t;
+    var thumbnail = "";
+    if ("media$thumbnail" in post) {
+      thumbnail = post.media$thumbnail.url.replace("s72-c", "s200");
+    }
+    var item = document.createElement("div");
+    item.classList.add("post-item");
+    item.innerHTML = '<div class="post-thumbnail"><a href="' + link + '"><img src="' + thumbnail + '"></a></div><div class="post-content"><h2><a href="' + link + '">' + title + '</a></h2><p class="post-date">' + date + '</p><p>' + content + '</p></div>';
+    postList.appendChild(item);
+  }
+}
+
+var script = document.createElement("script");
+script.src = "https://air.omasae.com/feeds/posts/default?alt=json-in-script&callback=showPostList";
+document.body.appendChild(script);
+
+</script>
+
+  </body>
+</html>
